@@ -13,21 +13,43 @@ let dados = {
 }
 
 const VendedorSchema = mongoose.model('Vendedor', {
-    nome: String,
-    email: String,
+    nome: {type: String, required: true},
+    email: {type: String, required: true},
     telefone: String,
-    senha: String
+    senha: {type: String, required: true}
 });
 
 app.get('/', (request, response) => {
     response.send(dados);
 });
 
+app.get('/vendedores', (request, response) => {
+    VendedorSchema.find((error, vendedores) => {
+      response.send(vendedores);
+    })
+});
+
 app.post('/vendedores', (request, response) => {
     let vendedor = new VendedorSchema(request.body);
 
     vendedor.save((error, resultado) => {
-        response.send(resultado);
+        if(error){
+            response.status(400).send(error);
+            return;
+        }
+
+        response.status(201).send(resultado);
+    });
+});
+
+app.post('/login', (request, response) => {
+    VendedorSchema.findOne(request.body, (error, vendedor) => {
+        if(vendedor){
+            response.send(vendedor);
+            return;
+        }
+
+        response.sendStatus(400);
     });
 });
 
