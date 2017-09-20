@@ -29,6 +29,17 @@ app.get('/vendedores', (request, response) => {
     })
 });
 
+app.get('/vendedor', (request, response) => {
+    VendedorSchema.findById(request.query.id, (error, vendedor) => {
+        if(vendedor){
+            response.send(vendedor);
+            return;
+        }
+
+        response.sendStatus(404);
+    })
+});
+
 app.post('/vendedores', (request, response) => {
     let vendedor = new VendedorSchema(request.body);
 
