@@ -29,8 +29,21 @@ app.get('/vendedores', (request, response) => {
     })
 });
 
-app.get('/vendedor', (request, response) => {
-    VendedorSchema.findById(request.query.id, (error, vendedor) => {
+app.get('/vendedor/:id', (request, response) => {
+    VendedorSchema.findById(request.params.id, (error, vendedor) => {
+        if(vendedor){
+            response.send(vendedor);
+            return;
+        }
+
+        response.sendStatus(404);
+    })
+});
+
+app.get('/vendedores/:nome', (request, response) => {
+    const regex = new RegExp(request.params.nome, 'i');
+
+    VendedorSchema.find({nome: regex}, (error, vendedor) => {
         if(vendedor){
             response.send(vendedor);
             return;
